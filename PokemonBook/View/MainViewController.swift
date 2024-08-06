@@ -19,6 +19,7 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         
         configureUI()
+        bind()
     }
     
     // 포켓볼 이미지 관련
@@ -33,10 +34,10 @@ class MainViewController: UIViewController {
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: pokeLayout())
         // * 36번 라인은 디테일 뷰 생성해서 셀에 들어갈 내용 정리하고 레지스터에 추가해주면 될 듯?
-        //collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "PokemonCell")
-        collectionView.delegate
-        collectionView.dataSource
-        collectionView.backgroundColor = UIColor.cellBackground
+        collectionView.register(PokeCell.self, forCellWithReuseIdentifier: PokeCell.id)
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.backgroundColor = UIColor.darkRed
         
         return collectionView
     }()
@@ -57,10 +58,10 @@ class MainViewController: UIViewController {
         let layout = UICollectionViewFlowLayout()
         let spacing: CGFloat = 10
         let numberOfItemsRow: CGFloat = 3
-        let width = (view.frame.width - (numberOfItemsRow + 1) * spacing) / numberOfItemsRow
+        let width = (view.frame.width - (numberOfItemsRow - 1) * spacing) / numberOfItemsRow
         
         layout.itemSize = CGSize(width: width, height: width)
-        layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
+        layout.sectionInset = UIEdgeInsets(top: spacing, left: 0, bottom: spacing, right: 0)
         layout.minimumLineSpacing = spacing
         layout.minimumInteritemSpacing = spacing
         
@@ -80,13 +81,14 @@ class MainViewController: UIViewController {
         // 포켓볼 레이아웃
         pokeballImage.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalToSuperview().inset(20)
+            $0.width.height.equalTo(104)
+            $0.top.equalToSuperview().inset(64)
         }
         
         // 컬렉션 뷰 레이아웃
         collectionView.snp.makeConstraints {
             $0.top.equalTo(pokeballImage.snp.bottom).offset(20)
-            $0.left.right.bottom.equalToSuperview().inset(10)
+            $0.left.right.bottom.equalToSuperview()
         }
     }
 }
@@ -99,22 +101,24 @@ extension UIColor {
 
 extension MainViewController: UICollectionViewDelegate {
     // 셀 선택 시 동작구현부분
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        <#code#>
-    }
+//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        <#code#>
+//    }
 }
 
 extension MainViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        <#code#>
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PokeCell.id, for: indexPath) as? PokeCell else { return UICollectionViewCell() }
+        cell.configure(with: pokeInfo[indexPath.row])
+        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        pokeInfo.count
+        return pokeInfo.count
     }
 }
 
-//#Preview {
-//    let test = MainViewController()
-//    return test
-//}
+#Preview {
+    let test = MainViewController()
+    return test
+}

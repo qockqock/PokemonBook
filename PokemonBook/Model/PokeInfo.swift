@@ -13,7 +13,12 @@ struct PokeResponse: Codable {
 
 struct PokeInfo: Codable {
     let name: String?
-    let url: String?
+    let url: String
+    
+    var id: Int {
+        let separator = url.split(separator: "/")
+        return Int(separator.last ?? "0") ?? 0
+    }
 }
 
 // 디테일은 1. No, 2. 이름, 3. 타입, 4. 키, 5. 몸무게
@@ -30,5 +35,5 @@ struct TypeElement: Codable {
 }
 
 struct Species: Codable {
-    let name: String
+    let name: String?
 }

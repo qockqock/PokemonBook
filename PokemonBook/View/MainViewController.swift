@@ -119,6 +119,6 @@ extension MainViewController: UICollectionViewDataSource {
 }
 
 #Preview {
-    let test = MainViewController()
+    let test = DetailViewController()
     return test
 }

@@ -39,4 +39,9 @@ class DetailViewModel {
                 self?.pokeDetailSubject.onError(error)
             }).disposed(by: disposeBag)
     }
+    
+    // 타입 한글변환 관련
+    func translatedTypeName(from type: String) -> String {
+        return PokemonTypeName(rawValue: type)?.displayName ?? type
+    }
 }

@@ -69,7 +69,7 @@ class DetailViewController: UIViewController {
                 
                 let id = " NO." + String(info.id!)
                 let name = PokemonTranslator.getKoreanName(for: info.name ?? "")
-                let types =  "타입: " + (info.types.first?.type.name ?? "")
+                let types =  "타입: " + (info.types.first.map { self.viewModel.translatedTypeName(from: $0.type.name ?? "") } ?? "")
                 let weight = "키: \(String(format: "%.1f", (info.weight ?? 0) * 0.1)) cm"
                 let height = " 몸무게: \(String(format: "%.1f", (info.height ?? 0) * 0.1)) kg"
                 

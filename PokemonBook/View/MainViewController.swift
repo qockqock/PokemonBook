@@ -106,6 +106,16 @@ extension MainViewController: UICollectionViewDelegate {
         let detailViewController = DetailViewController(id: pokemon.id)
         self.navigationController?.pushViewController(detailViewController, animated: true)
     }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let height = scrollView.frame.size.height
+        
+        if offsetY > contentHeight - height {
+            viewModel.fetchPokeInfomation()
+        }
+    }
 }
 
 extension MainViewController: UICollectionViewDataSource {

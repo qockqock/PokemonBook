@@ -7,6 +7,7 @@
 
 import Foundation
 import RxSwift
+import UIKit
 
 // 에러 타입설정
 enum NetworkError: Error {
@@ -46,4 +47,31 @@ class PokeNetworkManager {
             return Disposables.create()
         }
     }
+    
+    //MARK: -포켓몬 이미지 가져오는 메서드
+    func fetchImage(id: Int) -> Single<UIImage?> {
+            let urlString = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(id).png"
+            
+            guard let url = URL(string: urlString) else {
+                return Single.just(nil)
+            }
+        
+            return Single.create { single in
+                DispatchQueue.global().async {
+                    if let data = try? Data(contentsOf: url) {
+                        DispatchQueue.main.async {
+                            if let image = UIImage(data: data) {
+                                single(.success(image))
+                            } else {
+                                single(.success(nil))
+                            }
+                        }
+                    } else {
+                        single(.success(nil))
+                    }
+                }
+                
+                return Disposables.create()
+            }
+        }
 }

@@ -19,7 +19,7 @@ class DetailViewController: UIViewController {
     private let createLabel: (CGFloat) -> UILabel = {fontSize in
         let label = UILabel()
         label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: fontSize)
+        label.font = UIFont.boldSystemFont(ofSize: fontSize)
         return label
     }
     
@@ -41,6 +41,8 @@ class DetailViewController: UIViewController {
     init(id: Int) {
         self.viewModel = DetailViewModel(pokemonID: String(id))
         super.init(nibName: nil, bundle: nil)
+        
+        fetchPokemonImage(id: id)
     }
     
     required init?(coder: NSCoder) {
@@ -66,10 +68,10 @@ class DetailViewController: UIViewController {
                 guard let self = self else { return }
                 
                 let id = " NO." + String(info.id!)
-                let name = "  " + PokemonTranslator.getKoreanName(for: info.name ?? "")
-                let types = (info.types.first?.type.name ?? "") + "타입 포켓몬"
-                let weight = "키: \(String(format: "%.1f", (info.weight ?? 0) * 0.1))cm"
-                let height = " 몸무게: \(String(format: "%.1f", (info.height ?? 0) * 0.1))kg"
+                let name = PokemonTranslator.getKoreanName(for: info.name ?? "")
+                let types =  "타입: " + (info.types.first?.type.name ?? "")
+                let weight = "키: \(String(format: "%.1f", (info.weight ?? 0) * 0.1)) cm"
+                let height = " 몸무게: \(String(format: "%.1f", (info.height ?? 0) * 0.1)) kg"
                 
                 self.numberLabel.text = id
                 self.nameLabel.text = name
@@ -80,6 +82,15 @@ class DetailViewController: UIViewController {
                        onError: { error in
                 print(error)
             }).disposed(by: disposeBag)
+    }
+    
+    private func fetchPokemonImage(id: Int) {
+        PokeNetworkManager.shared.fetchImage(id: id)
+            .observe(on: MainScheduler.instance)
+            .subscribe(onSuccess: { [weak self] image in
+                self?.pokemonImage.image = image
+            })
+            .disposed(by: disposeBag)
     }
     
     private func setupUI() {
@@ -109,7 +120,7 @@ class DetailViewController: UIViewController {
         mainStackView.axis = .vertical
         mainStackView.alignment = .center
         mainStackView.spacing = 20
-        mainStackView.backgroundColor = .blue
+        mainStackView.backgroundColor = UIColor.darkRed
         
         [pokeView].forEach {
             view.addSubview($0)
@@ -118,13 +129,13 @@ class DetailViewController: UIViewController {
         pokeView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(100)
             $0.leading.trailing.equalToSuperview().inset(40)
-            $0.height.equalTo(500)
+            $0.height.equalTo(400)
                 }
         
         mainStackView.snp.makeConstraints {
             $0.center.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(400)
+            $0.height.equalTo(320)
         }
         
         pokemonImage.snp.makeConstraints {

@@ -12,6 +12,7 @@ import SnapKit
 class DetailViewController: UIViewController {
     
     let disposBag = DisposeBag()
+    private var pokemonId: Int
     
     // MARK: - 폰트 기본 설정 및 이미지
     // Label 생성 클로저
@@ -38,6 +39,14 @@ class DetailViewController: UIViewController {
     private lazy var heightLabel = createLabel("키: 12 m", 16)
     private lazy var weightLabel = createLabel("몸무게: 12kg", 16)
     
+    init(id: Int) {
+        self.pokemonId = id
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -100,9 +109,4 @@ class DetailViewController: UIViewController {
             $0.width.height.equalTo(180)
         }
     }
-}
-
-#Preview {
-    let test = DetailViewController()
-    return test
 }

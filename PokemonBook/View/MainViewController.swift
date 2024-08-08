@@ -101,9 +101,11 @@ extension UIColor {
 
 extension MainViewController: UICollectionViewDelegate {
     // 셀 선택 시 동작구현부분
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        <#code#>
-//    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let pokemon = pokeInfo[indexPath.row]
+        let detailViewController = DetailViewController(id: pokemon.id)
+        self.navigationController?.pushViewController(detailViewController, animated: true)
+    }
 }
 
 extension MainViewController: UICollectionViewDataSource {
@@ -118,7 +120,7 @@ extension MainViewController: UICollectionViewDataSource {
     }
 }
 
-#Preview {
-    let test = DetailViewController()
-    return test
-}
+//#Preview {
+//    let test = DetailViewController()
+//    return test
+//}

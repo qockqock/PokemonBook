@@ -23,10 +23,11 @@ struct PokeInfo: Codable {
 
 // 디테일은 1. No, 2. 이름, 3. 타입, 4. 키, 5. 몸무게
 struct DetailInfo: Codable {
-    let id: String?
+    let id: Int?
+    let name: String?
     let types: [TypeElement]
-    let height: Int?
-    let weight: Int?
+    let height: Float?
+    let weight: Float?
 }
 
 struct TypeElement: Codable {

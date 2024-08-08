@@ -11,14 +11,13 @@ import SnapKit
 
 class DetailViewController: UIViewController {
     
-    let disposBag = DisposeBag()
-    private var pokemonId: Int
+    let disposeBag = DisposeBag()
+    private var viewModel: DetailViewModel
     
     // MARK: - 폰트 기본 설정 및 이미지
     // Label 생성 클로저
-    private let createLabel: (String, CGFloat) -> UILabel = { text, fontSize in
+    private let createLabel: (CGFloat) -> UILabel = {fontSize in
         let label = UILabel()
-        label.text = text
         label.textColor = .white
         label.font = UIFont.systemFont(ofSize: fontSize)
         return label
@@ -27,20 +26,20 @@ class DetailViewController: UIViewController {
     // Image 생성
     private let pokemonImage: UIImageView = {
         let imageView = UIImageView()
+//        imageView.setImage(with:URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(viewModel.pokemonID).png"))
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
     // MARK: - 타입, 키, 몸무게 관련 레이블 선언
-    private lazy var numberLabel = createLabel("No.54", 24)
-    private lazy var nameLabel = createLabel("고라파덕", 24)
-    
-    private lazy var typeLabel = createLabel("타입: 12", 16)
-    private lazy var heightLabel = createLabel("키: 12 m", 16)
-    private lazy var weightLabel = createLabel("몸무게: 12kg", 16)
+    private lazy var numberLabel = createLabel(24)
+    private lazy var nameLabel = createLabel(24)
+    private lazy var typeLabel = createLabel(16)
+    private lazy var heightLabel = createLabel(16)
+    private lazy var weightLabel = createLabel(16)
     
     init(id: Int) {
-        self.pokemonId = id
+        self.viewModel = DetailViewModel(pokemonID: String(id))
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -51,12 +50,36 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        bind()
         
         view.backgroundColor = UIColor.mainRed
     }
     
     private func configureUI() {
         setupUI()
+    }
+    
+    private func bind() {
+        viewModel.pokeDetail
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] info in
+                guard let self = self else { return }
+                
+                let id = " NO." + String(info.id!)
+                let name = "  " + PokemonTranslator.getKoreanName(for: info.name ?? "")
+                let types = (info.types.first?.type.name ?? "") + "타입 포켓몬"
+                let weight = "키: \(String(format: "%.1f", (info.weight ?? 0) * 0.1))cm"
+                let height = " 몸무게: \(String(format: "%.1f", (info.height ?? 0) * 0.1))kg"
+                
+                self.numberLabel.text = id
+                self.nameLabel.text = name
+                self.typeLabel.text = types
+                self.weightLabel.text = weight
+                self.heightLabel.text = height
+            },
+                       onError: { error in
+                print(error)
+            }).disposed(by: disposeBag)
     }
     
     private func setupUI() {
@@ -88,7 +111,6 @@ class DetailViewController: UIViewController {
         mainStackView.spacing = 20
         mainStackView.backgroundColor = .blue
         
-//        view.addSubview(mainStackView)
         [pokeView].forEach {
             view.addSubview($0)
         }

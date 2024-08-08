@@ -12,7 +12,7 @@ import RxSwift
 class MainViewController: UIViewController {
 
     private var disposeBag = DisposeBag()
-    private var pokeInfo = [PokeInfo]()
+    private var pokeListSubject = [PokeInfo]()
     private var viewModel = MainViewModel()
     
     override func viewDidLoad() {
@@ -47,7 +47,7 @@ class MainViewController: UIViewController {
         viewModel.pokeInfoSubject
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] results in
-                self?.pokeInfo = results
+                self?.pokeListSubject = results
                 self?.collectionView.reloadData()
             }, onError: { error in
             print("에러 발생 \(error)")
@@ -102,7 +102,7 @@ extension UIColor {
 extension MainViewController: UICollectionViewDelegate {
     // 셀 선택 시 동작구현부분
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let pokemon = pokeInfo[indexPath.row]
+        let pokemon = pokeListSubject[indexPath.row]
         let detailViewController = DetailViewController(id: pokemon.id)
         self.navigationController?.pushViewController(detailViewController, animated: true)
     }
@@ -111,12 +111,12 @@ extension MainViewController: UICollectionViewDelegate {
 extension MainViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PokeCell.id, for: indexPath) as? PokeCell else { return UICollectionViewCell() }
-        cell.configure(with: pokeInfo[indexPath.row])
+        cell.configure(with: pokeListSubject[indexPath.row])
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return pokeInfo.count
+        return pokeListSubject.count
     }
 }
 

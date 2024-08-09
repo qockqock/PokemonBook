@@ -33,7 +33,6 @@ class MainViewController: UIViewController {
     // 컬렉션 뷰 관련
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: pokeLayout())
-        // * 36번 라인은 디테일 뷰 생성해서 셀에 들어갈 내용 정리하고 레지스터에 추가해주면 될 듯?
         collectionView.register(PokeCell.self, forCellWithReuseIdentifier: PokeCell.id)
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -93,12 +92,6 @@ class MainViewController: UIViewController {
     }
 }
 
-extension UIColor {
-    static let mainRed = UIColor(red: 190/255, green: 30/255, blue: 40/255, alpha: 1.0)
-    static let darkRed = UIColor(red: 120/255, green: 30/255, blue: 30/255, alpha: 1.0)
-    static let cellBackground = UIColor(red: 245/255, green: 245/255, blue: 235/255, alpha: 1.0)
-}
-
 extension MainViewController: UICollectionViewDelegate {
     // 셀 선택 시 동작구현부분
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -130,7 +123,8 @@ extension MainViewController: UICollectionViewDataSource {
     }
 }
 
-//#Preview {
-//    let test = DetailViewController()
-//    return test
-//}
+extension UIColor {
+    static let mainRed = UIColor(red: 190/255, green: 30/255, blue: 40/255, alpha: 1.0)
+    static let darkRed = UIColor(red: 120/255, green: 30/255, blue: 30/255, alpha: 1.0)
+    static let cellBackground = UIColor(red: 245/255, green: 245/255, blue: 235/255, alpha: 1.0)
+}

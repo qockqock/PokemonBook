@@ -6,12 +6,12 @@
 //
 
 import UIKit
-import RxSwift
 import SnapKit
+import RxSwift
 
 class DetailViewController: UIViewController {
     
-    let disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     private var viewModel: DetailViewModel
     
     // MARK: - 폰트 기본 설정 및 이미지
@@ -26,7 +26,6 @@ class DetailViewController: UIViewController {
     // Image 생성
     private let pokemonImage: UIImageView = {
         let imageView = UIImageView()
-//        imageView.setImage(with:URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(viewModel.pokemonID).png"))
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
@@ -130,7 +129,7 @@ class DetailViewController: UIViewController {
             $0.top.equalToSuperview().offset(100)
             $0.leading.trailing.equalToSuperview().inset(40)
             $0.height.equalTo(400)
-                }
+        }
         
         mainStackView.snp.makeConstraints {
             $0.center.equalToSuperview()
